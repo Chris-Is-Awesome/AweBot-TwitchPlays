@@ -1,0 +1,7 @@
+.env
+.vs/*
+__pycache__/
+.sln
+/TwitchPlays.pyproj.user
+*.pyproj
+/TwitchPlays.sln

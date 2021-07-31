@@ -1,0 +1,34 @@
+[
+	{
+		"gameOrPlatform": "Dolphin",
+		"input": {
+			"input": "right",
+			"output": "d"
+		},
+		"duration": 1
+	},
+	{
+		"gameOrPlatform": "Dolphin",
+		"input": {
+			"input": "longright",
+			"output": "d"
+		},
+		"duration": 2
+	},
+	{
+		"gameOrPlatform": "Hollow Knight",
+		"input": {
+			"input": "right",
+			"output": "d"
+		},
+		"duration": 1
+	},
+	{
+		"gameOrPlatform": "Hollow Knight",
+		"input": {
+			"input": "longright",
+			"output": "d"
+		},
+		"duration": 2
+	}
+]

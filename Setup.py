@@ -5,6 +5,7 @@ from ahk import AHK
 from dotenv import load_dotenv
 load_dotenv()
 import os
+import time
 
 #Download Autohotkey at https://www.autohotkey.com/ and provide the address to
 #AutoHotkey.exe below!
@@ -43,23 +44,18 @@ def gamecontrol():
 
 		if len(message) != 0:
 			if message != "twitch.tv/tags":
-				input = getValidInput("The Legend of Zelda: Twilight Princess", message.lower())
-				if input is not None:
-					ahk.key_press(input)
-					print("Chat pressed " + input + "!")
+				data = getDataForInput("The Legend of Zelda: Twilight Princess", message.lower())
+				if data is not None:
+					input = data.get("input").get("input")
+					output = data.get("input").get("output")
+					duration = data.get("duration")
+
+					print("Chat is pressing " + input + " (" + output +") for " + str(duration) + " second(s)!")
+
+					ahk.key_down(output)
+					time.sleep(duration)
+					ahk.key_release(output)
 				message = ""
-
-				# Goals with v2:
-
-					# 1. Better way of storing inputs that allow for more dynamic input handling (store inputs in json & learn how to deserialize it)
-					# (list<string>) games/platforms
-						# (dictionary<string, string>) dictionary containing user-friendly inputs and raw inputs
-							# (string) user-friendly input (input user must type/outputted to console) (ex. longright)
-							# (string) raw input (real AHK input value) (ex. right)
-						# (float) duration
-
-					# 2. PLS FIND A WAY TO NOT CALL GAMECONTROL() EVERY FRAME D:
-						# Look into TMI with python? idk if it works with this though...
 
 def twitch():
 

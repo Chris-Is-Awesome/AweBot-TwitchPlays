@@ -1,18 +1,6 @@
 from typing import List
 import json
 
-inputsForPlatforms = {
-	"Dolphin": [
-		"Space", "RControl", "RCtrl", "Z", "X", "C", "LControl", "LCtrl", "I", "K", "J", "L", "W", "S", "A", "D", "Up", "Down", "Left", "Right", "Q", "E"
-		]
-}
-
-platformsWithMultipleGames = {
-	"Dolphin": [
-		"The Legend of Zelda: Twilight Princess", "The Legend of Zelda: The Wind Waker"
-		]
-}
-
 class InputData(object):
 	def __init__(self, gameOrPlatform: str, input: dict[str, str], duration: float):
 		self.gameOrPlatform = gameOrPlatform

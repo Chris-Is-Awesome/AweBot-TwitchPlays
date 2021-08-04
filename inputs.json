@@ -1,34 +1,99 @@
 [
 	{
-		"gameOrPlatform": "Dolphin",
-		"input": {
-			"input": "right",
-			"output": "d"
-		},
-		"duration": 1
+		"platform": "Dolphin",
+		"inputs": [
+			{
+				"input": "spin",
+				"outputs": [
+					{
+						"output": "w",
+						"duration": 0.05
+					},
+					{
+						"output": "a",
+						"duration": 0.05
+					},
+					{
+						"output": "s",
+						"duration": 0.05
+					},
+					{
+						"output": "d",
+						"duration": 0.05
+					},
+					{
+						"output": "w",
+						"duration": 0.05
+					},
+					{
+						"output": "a",
+						"duration": 0.05
+					},
+					{
+						"output": "b",
+						"duration": 0.05
+					}
+				]
+			},
+			{
+				"input": "shortright",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 0.5
+					}
+				]
+			},
+			{
+				"input": "right",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 1
+					}
+				]
+			},
+			{
+				"input": "longright",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 2
+					}
+				]
+			}
+		]
 	},
 	{
-		"gameOrPlatform": "Dolphin",
-		"input": {
-			"input": "longright",
-			"output": "d"
-		},
-		"duration": 2
-	},
-	{
-		"gameOrPlatform": "Hollow Knight",
-		"input": {
-			"input": "right",
-			"output": "d"
-		},
-		"duration": 1
-	},
-	{
-		"gameOrPlatform": "Hollow Knight",
-		"input": {
-			"input": "longright",
-			"output": "d"
-		},
-		"duration": 2
+		"platform": "Hollow Knight",
+		"inputs": [
+			{
+				"input": "shortright",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 0.5
+					}
+				]
+			},
+			{
+				"input": "right",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 1
+					}
+				]
+			},
+			{
+				"input": "longright",
+				"outputs": [
+					{
+						"output": "d",
+						"duration": 2
+					}
+				]
+			}
+		]
 	}
 ]

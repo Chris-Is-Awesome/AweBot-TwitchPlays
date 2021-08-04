@@ -46,15 +46,18 @@ def gamecontrol():
 			if message != "twitch.tv/tags":
 				data = getDataForInput("The Legend of Zelda: Twilight Princess", message.lower())
 				if data is not None:
-					input = data.get("input").get("input")
-					output = data.get("input").get("output")
-					duration = data.get("duration")
+					input = data["input"]
+					outputs = data["outputs"]
 
-					print("Chat is pressing " + input + " (" + output +") for " + str(duration) + " second(s)!")
+					print("Chat triggered " + input + "!")
 
-					ahk.key_down(output)
-					time.sleep(duration)
-					ahk.key_release(output)
+					# Run input(s)
+					for output in outputs:
+						key = output["output"]
+						ahk.key_down(key)
+						time.sleep(output["duration"])
+						ahk.key_release(key)
+
 				message = ""
 
 def twitch():

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 import time
+import _thread
 
 #Download Autohotkey at https://www.autohotkey.com/ and provide the address to
 #AutoHotkey.exe below!
@@ -65,7 +66,10 @@ def gamecontrol():
 						else:
 							ahk.key_down(key)
 							if isRecursive:
-								heldInputs[key] = exitCond
+								if exitCond:
+									heldInputs[key] = exitCond
+								else:
+									heldInputs[key] = duration
 							else:
 								time.sleep(duration)
 								ahk.key_release(key)
@@ -78,6 +82,10 @@ def gamecontrol():
 								heldInputs.pop(heldInput)
 								break
 
+					for heldInput in heldInputs:
+						duration = heldInputs[heldInput]
+						if type(duration) == int or type(duration) == float:
+							_thread.start_new_thread(releaseInputAfterDelay, (ahk, heldInput, duration))
 				message = ""
 
 def twitch():

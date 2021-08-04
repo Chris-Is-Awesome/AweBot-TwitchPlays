@@ -1,4 +1,5 @@
 import json
+import time
 
 platformsWithMultipleGames = {
 	"Dolphin": [
@@ -23,6 +24,11 @@ def getDataForInput(wantedPlatform, wantedInput):
 								return None
 					return input
 	return None
+
+def releaseInputAfterDelay(ahk, input, delay):
+	time.sleep(delay)
+	ahk.key_release(input)
+	print("Released " + str(input))
 
 def loadInputData():
 	file = open("inputs.json")

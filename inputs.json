@@ -81,6 +81,23 @@
 						"exitCondition": ""
 					}
 				]
+			},
+			{
+				"input": "upright",
+				"outputs": [
+					{
+						"output": "w",
+						"duration": 1,
+						"isRecursive": true,
+						"exitCondition": ""
+					},
+					{
+						"output": "d",
+						"duration": 1,
+						"isRecursive": true,
+						"exitCondition": ""
+					}
+				]
 			}
 		]
 	},

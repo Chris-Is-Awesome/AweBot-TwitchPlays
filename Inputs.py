@@ -6,11 +6,21 @@ platformsWithMultipleGames = {
 		]
 }
 
+# Key: Platform
+# Value: Input
+tempDisabledInputs = {}
+
 def getDataForInput(wantedPlatform, wantedInput):
 	for data in loadInputData():
-		if data["platform"] == getGameOrPlatform(wantedPlatform):
+		platform = data["platform"]
+		if platform == getGameOrPlatform(wantedPlatform):
 			for input in data["inputs"]:
 				if input["input"] == wantedInput:
+					disabledInputsForPlatform = tempDisabledInputs.get(platform)
+					if disabledInputsForPlatform != None:
+						for disabledInput in disabledInputsForPlatform:
+							if disabledInput == wantedInput:
+								return None
 					return input
 	return None
 

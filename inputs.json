@@ -7,31 +7,45 @@
 				"outputs": [
 					{
 						"output": "w",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": true,
+						"exitCondition": "a"
 					},
 					{
 						"output": "a",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": true,
+						"exitCondition": "s"
 					},
 					{
 						"output": "s",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": true,
+						"exitCondition": "d"
 					},
 					{
 						"output": "d",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": true,
+						"exitCondition": "w"
 					},
 					{
 						"output": "w",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": true,
+						"exitCondition": "a"
 					},
 					{
 						"output": "a",
-						"duration": 0.05
+						"duration": 0.01,
+						"isRecursive": true,
+						"exitCondition": "b"
 					},
 					{
 						"output": "b",
-						"duration": 0.05
+						"duration": 0.1,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			},
@@ -40,7 +54,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 0.5
+						"duration": 0.5,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			},
@@ -49,7 +65,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 1
+						"duration": 1,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			},
@@ -58,7 +76,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 2
+						"duration": 2,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			}
@@ -72,7 +92,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 0.5
+						"duration": 0.5,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			},
@@ -81,7 +103,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 1
+						"duration": 1,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			},
@@ -90,7 +114,9 @@
 				"outputs": [
 					{
 						"output": "d",
-						"duration": 2
+						"duration": 2,
+						"isRecursive": false,
+						"exitCondition": ""
 					}
 				]
 			}

@@ -48,15 +48,43 @@ def gamecontrol():
 				if data is not None:
 					input = data["input"]
 					outputs = data["outputs"]
+					heldInputs = {}
 
 					print("Chat triggered " + input + "!")
 
 					# Run input(s)
 					for output in outputs:
 						key = output["output"]
-						ahk.key_down(key)
-						time.sleep(output["duration"])
-						ahk.key_release(key)
+						duration = output["duration"]
+						isRecursive = output["isRecursive"]
+						exitCond = output["exitCondition"]
+
+						if duration <= 0:
+							ahk.key_press(key)
+						else:
+							ahk.key_down(key)
+							if isRecursive:
+								heldInputs[key] = exitCond
+								print("Pressed recursive key: " + key + " with exit cond of " + exitCond)
+							else:
+								time.sleep(duration)
+								ahk.key_release(key)
+
+						# Check if any held input needs to be released based on exit condition
+						for heldInput in heldInputs:
+							keyToRelease = heldInput
+							#print("Checking if held input has exit cond of " + keyToRelease)
+							if key == heldInputs[heldInput]:
+								ahk.key_release(keyToRelease)
+								print("Released recursive key: " + heldInput)
+								heldInputs.pop(heldInput)
+								break
+
+
+					#for output in outputs:
+						#ahk.key_down(key)
+						#time.sleep(duration)
+						#ahk.key_release(key)
 
 				message = ""
 

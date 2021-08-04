@@ -59,13 +59,13 @@ def gamecontrol():
 						isRecursive = output["isRecursive"]
 						exitCond = output["exitCondition"]
 
+						# Press/hold input
 						if duration <= 0:
 							ahk.key_press(key)
 						else:
 							ahk.key_down(key)
 							if isRecursive:
 								heldInputs[key] = exitCond
-								print("Pressed recursive key: " + key + " with exit cond of " + exitCond)
 							else:
 								time.sleep(duration)
 								ahk.key_release(key)
@@ -73,18 +73,10 @@ def gamecontrol():
 						# Check if any held input needs to be released based on exit condition
 						for heldInput in heldInputs:
 							keyToRelease = heldInput
-							#print("Checking if held input has exit cond of " + keyToRelease)
 							if key == heldInputs[heldInput]:
 								ahk.key_release(keyToRelease)
-								print("Released recursive key: " + heldInput)
 								heldInputs.pop(heldInput)
 								break
-
-
-					#for output in outputs:
-						#ahk.key_down(key)
-						#time.sleep(duration)
-						#ahk.key_release(key)
 
 				message = ""
 

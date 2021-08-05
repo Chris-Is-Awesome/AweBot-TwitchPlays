@@ -38,7 +38,7 @@ irc.send((	"PASS " + PASS + "\n" +
 			"NICK " + BOT + "\n" +
 			"JOIN #" + CHANNEL + "\n").encode())
 
-def gamecontrol():
+def update():
 
 	global message
 
@@ -170,6 +170,6 @@ def main():
 	if __name__ =='__main__':
 		t1 = threading.Thread(target = twitch)
 		t1.start()
-		t2 = threading.Thread(target = gamecontrol)
+		t2 = threading.Thread(target = update)
 		t2. start()
 main()

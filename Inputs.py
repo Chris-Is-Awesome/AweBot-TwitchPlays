@@ -14,7 +14,7 @@ tempDisabledInputs = {}
 def getDataForInput(wantedPlatform, wantedInput):
 	for data in loadInputData():
 		platform = data["platform"]
-		if platform == getGameOrPlatform(wantedPlatform):
+		if platform == wantedPlatform or platform == getGameOrPlatform(wantedPlatform):
 			for input in data["inputs"]:
 				if input["input"] == wantedInput:
 					disabledInputsForPlatform = tempDisabledInputs.get(platform)

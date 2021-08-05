@@ -5,3 +5,4 @@ __pycache__/
 /TwitchPlays.pyproj.user
 *.pyproj
 /TwitchPlays.sln
+settings.json

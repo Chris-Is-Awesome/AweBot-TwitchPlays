@@ -1,4 +1,3 @@
-import atexit
 import os
 import socket
 import time
@@ -104,9 +103,7 @@ def twitch():
 		while Loading:
 			readbuffer_join = irc.recv(1024)
 			readbuffer_join = readbuffer_join.decode()
-			#print(readbuffer_join)
 			for line in readbuffer_join.split("\n")[0:-1]:
-				#print(line)
 				Loading = loadingComplete(line)
 
 	def loadingComplete(line):
@@ -122,7 +119,6 @@ def twitch():
 		irc.send((messageTemp + "\n").encode())
 
 	def getUser(line):
-		#global user
 		colons = line.count(":")
 		colonless = colons-1
 		separate = line.split(":", colons)
@@ -130,7 +126,6 @@ def twitch():
 		return user
 
 	def getMessage(line):
-		#global message
 		try:
 			colons = line.count(":")
 			message = (line.split(":", colons))[colons]
@@ -164,7 +159,6 @@ def twitch():
 				try:
 					user = getUser(line)
 					message = getMessage(line)
-					#print(user + " : " + message)
 				except Exception:
 					pass
 

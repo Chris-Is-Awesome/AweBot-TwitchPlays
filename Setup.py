@@ -7,6 +7,7 @@ load_dotenv()
 import os
 import time
 import _thread
+from Fun import *
 
 #Download Autohotkey at https://www.autohotkey.com/ and provide the address to
 #AutoHotkey.exe below!
@@ -45,13 +46,17 @@ def gamecontrol():
 
 		if len(message) != 0:
 			if message != "twitch.tv/tags":
-				data = getDataForInput("The Legend of Zelda: Twilight Princess", message.lower())
+				#game = "The Legend of Zelda: Twilight Princess"
+				game = "Hollow Knight"
+				data = getDataForInput(game, message.lower())
 				if data is not None:
 					input = data["input"]
 					outputs = data["outputs"]
 					heldInputs = {}
 
 					print("Chat triggered " + input + "!")
+					thread = _thread.start_new_thread(tryPlaySound, (game,))
+					thread.exit()
 
 					# Run input(s)
 					for output in outputs:

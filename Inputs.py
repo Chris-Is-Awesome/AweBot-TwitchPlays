@@ -28,7 +28,6 @@ def getDataForInput(wantedPlatform, wantedInput):
 def releaseInputAfterDelay(ahk, input, delay):
 	time.sleep(delay)
 	ahk.key_release(input)
-	print("Released " + str(input))
 
 def loadInputData():
 	file = open("inputs.json")

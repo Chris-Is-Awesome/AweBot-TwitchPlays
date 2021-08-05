@@ -55,8 +55,7 @@ def gamecontrol():
 					heldInputs = {}
 
 					print("Chat triggered " + input + "!")
-					thread = _thread.start_new_thread(tryPlaySound, (game,))
-					thread.exit()
+					_thread.start_new_thread(tryPlaySound, (game,))
 
 					# Run input(s)
 					for output in outputs:

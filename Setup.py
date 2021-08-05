@@ -1,42 +1,37 @@
+import atexit
+import os
 import socket
+import time
+import _thread
 import threading
 from Inputs import *
 from ahk import AHK
 from dotenv import load_dotenv
-load_dotenv()
-import os
-import time
-import _thread
 from Fun import *
 
-#Download Autohotkey at https://www.autohotkey.com/ and provide the address to
-#AutoHotkey.exe below!
+load_dotenv()
 ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
-
 SERVER = "irc.twitch.tv"
 PORT = 6667
-
-#Your OAUTH Code Here https://twitchapps.com/tmi/
 PASS = os.environ.get("PASS")
-
-#What you'd like to name your bot
 BOT = "The_Goat_Howard"
-
-#The channel you want to monitor
 CHANNEL = "chrisisawesome"
-
-#Your account
 OWNER = "ChrisIsAwesome"
-
 message = ""
 user = ""
-
 irc = socket.socket()
 
-irc.connect((SERVER, PORT))
-irc.send((	"PASS " + PASS + "\n" +
-			"NICK " + BOT + "\n" +
-			"JOIN #" + CHANNEL + "\n").encode())
+def setup():
+	file = open("settings.json")
+	loadedData = json.load(file)
+	file.close()
+	print("Setup has loaded settings:\n{")
+	for setting in loadedData:
+		print("     " + setting + ": " + str(loadedData[setting]))
+	print("}\n")
+	return loadedData
+
+settings = setup()
 
 def update():
 
@@ -46,16 +41,19 @@ def update():
 
 		if len(message) != 0:
 			if message != "twitch.tv/tags":
-				#game = "The Legend of Zelda: Twilight Princess"
-				game = "Hollow Knight"
+				game = settings["game"]
 				data = getDataForInput(game, message.lower())
 				if data is not None:
+					waitForWinActive = settings["waitForWinActive"]
+					playSounds = settings["playSounds"]
 					input = data["input"]
 					outputs = data["outputs"]
 					heldInputs = {}
 
 					print("Chat triggered " + input + "!")
-					_thread.start_new_thread(tryPlaySound, (game,))
+
+					if playSounds:
+						_thread.start_new_thread(tryPlaySound, (game,))
 
 					# Run input(s)
 					for output in outputs:
@@ -92,6 +90,10 @@ def update():
 							_thread.start_new_thread(releaseInputAfterDelay, (ahk, heldInput, duration))
 				message = ""
 
+def connect():
+	irc.connect((SERVER, PORT))
+	irc.send((	"PASS " + PASS + "\n" + "NICK " + BOT + "\n" + "JOIN #" + CHANNEL + "\n").encode())
+
 def twitch():
 
 	global user
@@ -102,15 +104,15 @@ def twitch():
 		while Loading:
 			readbuffer_join = irc.recv(1024)
 			readbuffer_join = readbuffer_join.decode()
-			print(readbuffer_join)
+			#print(readbuffer_join)
 			for line in readbuffer_join.split("\n")[0:-1]:
-				print(line)
+				#print(line)
 				Loading = loadingComplete(line)
 
 	def loadingComplete(line):
 		if("End of /NAMES list" in line):
-			print("TwitchBot has joined " + CHANNEL + "'s Channel!")
-			sendMessage(irc, "Hello World!")
+			print("AweBot:TwitchPlays has joined " + CHANNEL + "'s channel!\n\n--------------------------------------------------\n")
+			sendMessage(irc, "Baaaa! Twitch Plays is active! Type inputs in chat to see them play out in game! TODO: Add link to info")
 			return False
 		else:
 			return True
@@ -168,6 +170,8 @@ def twitch():
 
 def main():
 	if __name__ =='__main__':
+		connect()
+
 		t1 = threading.Thread(target = twitch)
 		t1.start()
 		t2 = threading.Thread(target = update)

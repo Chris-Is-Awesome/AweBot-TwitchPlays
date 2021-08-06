@@ -5,7 +5,7 @@ from ahk import AHK
 ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
 
 def loadAllSounds(game):
-	path = os.getcwd() + "/sounds/" + game
+	path = os.getcwd() + "\\sounds\\" + game
 	if os.path.exists(path):
 		allSoundFiles = os.listdir(path)
 		playSound(path, allSoundFiles)
@@ -20,4 +20,4 @@ def playSound(path, allSoundFiles):
 		file = path + "/" + allSoundFiles[randSound]
 		ahk.set_volume(50)
 		ahk.sound_play(file)
-		print("Played sound: " + allSoundFiles[randSound] + " with random chance of: " + str(randChance))
+		print("[SOUND] Played sound: '" + allSoundFiles[randSound] + "' with random chance of: " + str(randChance))

@@ -11,6 +11,10 @@ heldInputs = {}
 channel = None
 isActive = True;
 
+# Stats
+totalInputs = 0
+inputUsage = {}
+
 async def on_message_sent(messageData):
 	if isActive == True:
 		global game
@@ -76,6 +80,15 @@ def handle_input(data, user):
 		if type(duration) == int or type(duration) == float:
 			_thread.start_new_thread(releaseInputAfterDelay, (ahk, heldInput, duration))
 
+	# Update stats
+	inputName = data["input"]
+	global totalInputs
+	totalInputs += 1
+	if inputName in inputUsage:
+		inputUsage[inputName] = inputUsage[inputName] + 1
+	else:
+		inputUsage[inputName] = 1
+
 	return None
 
 def get_input_list():
@@ -96,7 +109,17 @@ def on_quit(signal, frame):
 		isActive = False
 		if channel is not None:
 			loop = asyncio.get_event_loop()
-			loop.create_task(channel.send("Twitch Plays is inactive. Here are the session's stats: (todo)"))
+			loop.create_task(channel.send("Twitch Plays is inactive. Here are the session's stats:"))
+			loop.create_task(channel.send("Total input(s): " + str(totalInputs)))
+
+			inputUsageOutput = "Top command(s): "
+			for key, value in sorted(inputUsage.items(), key=lambda x: x[1], reverse=True):
+				inputUsageOutput += key + ": " + str(value) + ", "
+
+			size = len(inputUsageOutput)
+			inputUsageOutput = inputUsageOutput[:size - 2]
+
+			loop.create_task(channel.send(inputUsageOutput))
 
 		print("\n--------------------------------------------------\n")
 		#input("Press any key to exit...")

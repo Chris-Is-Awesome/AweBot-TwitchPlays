@@ -15,7 +15,7 @@ def tryPlaySound(game):
 
 def playSound(path, allSoundFiles):
 	randChance = random.randint(0, 100)
-	if randChance < 6:
+	if randChance <= 5:
 		randSound = random.randint(0, len(allSoundFiles) - 1)
 		file = path + "/" + allSoundFiles[randSound]
 		ahk.set_volume(50)

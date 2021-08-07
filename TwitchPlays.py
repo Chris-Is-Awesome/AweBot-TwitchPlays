@@ -13,6 +13,8 @@ isActive = True;
 
 async def on_message_sent(messageData):
 	if isActive == True:
+		global game
+		game = settings["game"]
 		user = messageData.author
 		global channel
 		channel = messageData.channel
@@ -22,10 +24,9 @@ async def on_message_sent(messageData):
 		message = messageData.content
 
 		if message == "!inputs":
-			await channel.send("@" + user.name + ": " + get_input_list())
+			await channel.send("@" + user.name + ": Here are the inputs for " + game + ": " + str(get_input_list()))
+			print("[COMMAND] Sent list of inputs to '" + user.name + "'")
 		else:
-			global game
-			game = settings["game"]
 			data = getDataForInput(game, message)
 			if data is not None:
 				_thread.start_new_thread(handle_input, [data, user.name])
@@ -78,7 +79,13 @@ def handle_input(data, user):
 	return None
 
 def get_input_list():
-	return "TODO: Return list of inputs for current platform"
+	allInputs = ""
+	for input in getAllInputsForGame(game):
+		allInputs += input["input"] + ", "
+
+	size = len(allInputs)
+	allInputs = allInputs[:size - 2]
+	return allInputs
 
 def on_quit(signal, frame):
 	global isActive

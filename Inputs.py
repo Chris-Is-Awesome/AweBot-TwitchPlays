@@ -25,6 +25,15 @@ def getDataForInput(wantedPlatform, wantedInput):
 					return input
 	return None
 
+
+def getAllInputsForGame(wantedPlatform):
+	for data in loadInputData():
+		platform = data["platform"]
+		if platform == wantedPlatform or platform == getGameOrPlatform(wantedPlatform):
+			return data["inputs"]
+
+	return None
+
 def releaseInputAfterDelay(ahk, input, delay):
 	time.sleep(delay)
 	ahk.key_release(input)

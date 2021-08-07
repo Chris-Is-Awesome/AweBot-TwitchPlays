@@ -113,8 +113,11 @@ def on_quit(signal, frame):
 			loop.create_task(channel.send("Total input(s): " + str(totalInputs)))
 
 			inputUsageOutput = "Top command(s): "
+			iterations = 0
 			for key, value in sorted(inputUsage.items(), key=lambda x: x[1], reverse=True):
-				inputUsageOutput += key + ": " + str(value) + ", "
+				if iterations < 3:
+					inputUsageOutput += key + ": " + str(value) + ", "
+					iterations += 1
 
 			size = len(inputUsageOutput)
 			inputUsageOutput = inputUsageOutput[:size - 2]

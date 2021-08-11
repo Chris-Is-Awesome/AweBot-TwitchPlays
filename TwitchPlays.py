@@ -100,8 +100,6 @@ async def on_message_sent(messageData):
 
 					if playSounds:
 						_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
-				else:
-					print("[ERROR] No input data found for the game: " + game)
 
 def get_input_list():
 	allInputs = ""

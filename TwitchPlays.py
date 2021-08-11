@@ -30,6 +30,9 @@ async def on_message_sent(messageData):
 		if message == "!inputs":
 			await channel.send("@" + user.name + ": Here are the inputs for " + game + ": " + str(get_input_list()))
 			print("[COMMAND] Sent list of inputs to {" + user.name + "}")
+		elif message == "!help":
+			await channel.send("@" + user.name + ": Welcome to TwitchPlays! TwitchPlays is an interactive stream where you type inputs in chat and it sends those inputs to the game you're watching! You can optionally give a duration in seconds for the input (whole number or decimal)! Here's an example: {up 10} will move the player up for 10 seconds. Type {!inputs} to get the list of inputs or {!aliases <input name>} to get list of aliases")
+			print("[COMMAND] Sent help to {" + user.name + "}")
 		else:
 			# Aliases command
 			if message.startswith("!aliases"):
@@ -47,6 +50,7 @@ async def on_message_sent(messageData):
 						aliasesOutput = aliasesOutput[:size - 2]
 
 						await channel.send(aliasesOutput)
+						print("[COMMAND] Sent list of aliases to {" + user.name + "}")
 					else:
 						await channel.send("@" + user.name + ": Input {" + words[1].lower() + "} has no aliases.")
 				else:

@@ -101,7 +101,9 @@ def get_all_inputs_for_game(game):
 
 # Returns list of all aliases for the given input
 def get_all_aliases_for_input(data):
-	return data.get("aliases")
+	if data is not None:
+		return data.get("aliases")
+	return None
 
 # Loads & parses input data from json for the given game
 def load_input_data(game):

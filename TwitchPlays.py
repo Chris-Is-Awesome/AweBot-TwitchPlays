@@ -58,6 +58,15 @@ async def on_message_sent(messageData):
 
 				_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
 
+				# Update stats
+				global totalInputs
+				totalInputs += 1
+
+				if inputName in inputUsage:
+					inputUsage[inputName] = inputUsage[inputName] + 1
+				else:
+					inputUsage[inputName] = 1
+
 				if hasGivenDuration:
 					print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
 				else:
@@ -70,7 +79,7 @@ async def on_message_sent(messageData):
 
 def get_input_list():
 	allInputs = ""
-	for input in get_all_inputs_for_game(game):
+	for input in Inputs.get_all_inputs_for_game(game):
 		allInputs += input["input"] + ", "
 
 	size = len(allInputs)
@@ -82,6 +91,9 @@ def on_quit(signal, frame):
 	if isActive == True:
 		print("\n--------------------------------------------------\n")
 		print("Terminating from input...")
+
+		if totalInputs > 0:
+			Inputs.release_all_keys()
 	
 		isActive = False
 		if channel is not None:

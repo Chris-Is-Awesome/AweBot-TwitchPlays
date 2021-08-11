@@ -1,13 +1,12 @@
-import asyncio
 import _thread
+import asyncio
+import Inputs
 from ahk import AHK
-from Fun import *
-from Inputs import *
+from Fun import try_play_sound
 from signal import signal, SIGINT
 
 # Set variables
 ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
-heldInputs = {}
 channel = None
 isActive = True;
 
@@ -29,11 +28,45 @@ async def on_message_sent(messageData):
 
 		if message == "!inputs":
 			await channel.send("@" + user.name + ": Here are the inputs for " + game + ": " + str(get_input_list()))
-			print("[COMMAND] Sent list of inputs to '" + user.name + "'")
+			print("[COMMAND] Sent list of inputs to {" + user.name + "}")
 		else:
-			data = getDataForInput(game, message)
+			inputName = message.split(" ", 1)[0] 
+			data = Inputs.get_data_for_input(game, inputName)
+			duration = Inputs.defaultDuration
+
+			waitForWinActive = settings["waitForWinActive"]
+			playSounds = settings["playSounds"]
+			showStats = settings["showStats"]
+			hasGivenDuration = False
+			hasExitCond = False
+
 			if data is not None:
-				_thread.start_new_thread(handle_input, [data, user.name])
+				outputs = data["outputs"]
+
+				for output in outputs:
+					if output.get("exitCond") is not None:
+						hasExitCond = True
+
+				if not hasExitCond:
+					for word in message.split(" "):
+						try:
+							duration = float(word)
+							hasGivenDuration = True
+							break
+						except:
+							continue
+
+				_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+
+				if hasGivenDuration:
+					print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
+				else:
+					print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
+
+				if playSounds:
+					_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+			else:
+				print("[ERROR] No input data found for the game: " + game)
 
 def handle_input(data, user):
 	waitForWinActive = settings["waitForWinActive"]
@@ -93,7 +126,7 @@ def handle_input(data, user):
 
 def get_input_list():
 	allInputs = ""
-	for input in getAllInputsForGame(game):
+	for input in get_all_inputs_for_game(game):
 		allInputs += input["input"] + ", "
 
 	size = len(allInputs)

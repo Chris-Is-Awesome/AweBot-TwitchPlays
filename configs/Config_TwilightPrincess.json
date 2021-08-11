@@ -1,0 +1,56 @@
+{
+	"program": "Dolphin",
+	"defaultDuration": 1,
+	"inputs": [
+		{
+			"input": "spin",
+			"aliases": [
+				"spinattack"
+			],
+			"outputs": [
+				{
+					"output": "w",
+					"isMulti": true,
+					"exitCond": "a"
+				},
+				{
+					"output": "a",
+					"isMulti": true,
+					"exitCond": "s"
+				},
+				{
+					"output": "s",
+					"isMulti": true,
+					"exitCond": "d"
+				},
+				{
+					"output": "d",
+					"isMulti": true,
+					"exitCond": "w"
+				},
+				{
+					"output": "w",
+					"isMulti": true,
+					"exitCond": "a"
+				},
+				{
+					"output": "a",
+					"isMulti": true,
+					"exitCond": "b"
+				},
+				{
+					"output": "b",
+					"duration": 0.1
+				}
+			]
+		},
+		{
+			"input": "up",
+			"outputs": [
+				{
+					"output": "w"
+				}
+			]
+		}
+	]
+}

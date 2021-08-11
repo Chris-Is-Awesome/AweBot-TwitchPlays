@@ -68,62 +68,6 @@ async def on_message_sent(messageData):
 			else:
 				print("[ERROR] No input data found for the game: " + game)
 
-def handle_input(data, user):
-	waitForWinActive = settings["waitForWinActive"]
-	playSounds = settings["playSounds"]
-	outputs = data["outputs"]
-
-	print("[INPUT] Input '" + data["input"] + "' triggered by '" + user + "'!")
-
-	if playSounds:
-		_thread.start_new_thread(tryPlaySound, [game])
-
-	# Run input(s)
-	for output in outputs:
-		key = output["output"]
-		duration = output["duration"]
-		isRecursive = output["isRecursive"]
-		exitCond = output["exitCondition"]
-
-		# Press/hold input
-		if duration <= 0:
-			ahk.key_press(key)
-		else:
-			ahk.key_down(key)
-			if isRecursive:
-				if exitCond:
-					heldInputs[key] = exitCond
-				else:
-					heldInputs[key] = duration
-			else:
-				time.sleep(duration)
-				ahk.key_release(key)
-
-		# Check if any held input needs to be released based on exit condition
-		for heldInput in heldInputs:
-			keyToRelease = heldInput
-			if key == heldInputs[heldInput]:
-				ahk.key_release(keyToRelease)
-				heldInputs.pop(heldInput)
-				break
-
-	# Release held inputs after their duration
-	for heldInput in heldInputs:
-		duration = heldInputs[heldInput]
-		if type(duration) == int or type(duration) == float:
-			_thread.start_new_thread(releaseInputAfterDelay, (ahk, heldInput, duration))
-
-	# Update stats
-	inputName = data["input"]
-	global totalInputs
-	totalInputs += 1
-	if inputName in inputUsage:
-		inputUsage[inputName] = inputUsage[inputName] + 1
-	else:
-		inputUsage[inputName] = 1
-
-	return None
-
 def get_input_list():
 	allInputs = ""
 	for input in get_all_inputs_for_game(game):

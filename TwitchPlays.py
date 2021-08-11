@@ -26,56 +26,78 @@ async def on_message_sent(messageData):
 		timestamp = messageData.timestamp
 		message = messageData.content
 
+		# Inputs command
 		if message == "!inputs":
 			await channel.send("@" + user.name + ": Here are the inputs for " + game + ": " + str(get_input_list()))
 			print("[COMMAND] Sent list of inputs to {" + user.name + "}")
 		else:
-			inputName = message.split(" ", 1)[0] 
-			data = Inputs.get_data_for_input(game, inputName)
-			duration = Inputs.defaultDuration
+			# Aliases command
+			if message.startswith("!aliases"):
+				words = message.split(" ", 2)
+				if len(words) > 1:
+					aliases = Inputs.get_all_aliases_for_input(Inputs.get_data_for_input(game, words[1].lower()))
+					
+					if aliases is not None:
+						aliasesOutput = "@" + user.name + ": Aliases for " + words[1].lower() + ": "
 
-			waitForWinActive = settings["waitForWinActive"]
-			playSounds = settings["playSounds"]
-			showStats = settings["showStats"]
-			hasGivenDuration = False
-			hasExitCond = False
+						for alias in aliases:
+							aliasesOutput += alias + ", "
 
-			if data is not None:
-				outputs = data["outputs"]
+						size = len(aliasesOutput)
+						aliasesOutput = aliasesOutput[:size - 2]
 
-				for output in outputs:
-					if output.get("exitCond") is not None:
-						hasExitCond = True
-
-				if not hasExitCond:
-					for word in message.split(" "):
-						try:
-							duration = float(word)
-							hasGivenDuration = True
-							break
-						except:
-							continue
-
-				_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
-
-				# Update stats
-				global totalInputs
-				totalInputs += 1
-
-				if inputName in inputUsage:
-					inputUsage[inputName] = inputUsage[inputName] + 1
+						await channel.send(aliasesOutput)
+					else:
+						await channel.send("@" + user.name + ": Input {" + words[1].lower() + "} has no aliases.")
 				else:
-					inputUsage[inputName] = 1
-
-				if hasGivenDuration:
-					print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
-				else:
-					print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
-
-				if playSounds:
-					_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+					await channel.send("@" + user.name + ": Input name must be given as argument!")
 			else:
-				print("[ERROR] No input data found for the game: " + game)
+				inputName = message.split(" ", 1)[0] 
+				data = Inputs.get_data_for_input(game, inputName)
+
+				if data is not None:
+					duration = Inputs.defaultDuration
+
+					waitForWinActive = settings["waitForWinActive"]
+					playSounds = settings["playSounds"]
+					showStats = settings["showStats"]
+					hasGivenDuration = False
+					hasExitCond = False
+					outputs = data["outputs"]
+
+					for output in outputs:
+						if output.get("exitCond") is not None:
+							hasExitCond = True
+
+					if not hasExitCond:
+						for word in message.split(" "):
+							try:
+								duration = float(word)
+								hasGivenDuration = True
+								break
+							except:
+								continue
+
+					_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+
+					# Update stats
+					global totalInputs
+					totalInputs += 1
+
+					if inputName in inputUsage:
+						inputUsage[inputName] = inputUsage[inputName] + 1
+					else:
+						inputUsage[inputName] = 1
+
+					if hasGivenDuration:
+						print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
+					else:
+						print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
+
+					if playSounds:
+						_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+				else:
+					print("[ERROR] No input data found for the game: " + game)
 
 def get_input_list():
 	allInputs = ""

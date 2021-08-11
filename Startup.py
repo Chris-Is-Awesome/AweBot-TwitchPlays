@@ -10,6 +10,7 @@ load_dotenv()
 oauth = os.environ.get("PASS")
 client = os.environ.get("CLIENT")
 hasJoined = False
+settings = {}
 
 bot = commands.Bot(
 	token=oauth,
@@ -25,7 +26,7 @@ async def event_join(channel, user):
 
 	if hasJoined == False:
 		print("AweBot:TwitchPlays has joined " + "ChrisIsAwesome" + "'s channel!\n\n--------------------------------------------------\n")
-		await channel.send("Baaaa! Twitch Plays is active! Type inputs in chat to see them play out in game! TODO: Add link to info")
+		await channel.send("Baaaa! Twitch Plays is active! Type inputs in chat to see them play out in game! Type !inputs to get list of inputs for " + settings["game"] + " or type !help to get more info.")
 		hasJoined = True
 
 @bot.event()
@@ -35,6 +36,7 @@ async def event_message(messageData):
 
 def loadSettings():
 	file = open("settings.json")
+	global settings
 	settings = json.load(file)
 	file.close()
 

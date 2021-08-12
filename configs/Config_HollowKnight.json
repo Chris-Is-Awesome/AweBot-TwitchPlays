@@ -1,0 +1,191 @@
+{
+	"program": "Hollow Knight",
+	"defaultDuration": 0.5,
+	"inputs": [
+		{
+			"input": "pogo",
+			"outputs": [
+				{
+					"output": "s",
+					"isMulti": true,
+					"exitCond": "x"
+				},
+				{
+					"output": "x",
+					"duration": 0.1
+				}
+			]
+		},
+		{
+			"input": "focus",
+			"aliases": [
+				"heal"
+			],
+			"outputs": [
+				{
+					"output": "u",
+					"duration": 1.5
+				}
+			]
+		},
+		{
+			"input": "downspell",
+			"aliases": [
+				"desolatedive",
+				"descendingdark",
+				"ddark",
+				"dive"
+			],
+			"outputs": [
+				{
+					"output": "s",
+					"isMulti": true,
+					"exitCond": "u"
+				},
+				{
+					"output": "u",
+					"duration": 0.01
+				}
+			]
+		},
+		{
+			"input": "upspell",
+			"aliases": [
+				"howlingwraiths",
+				"abyssshriek",
+				"shriek",
+				"howl"
+			],
+			"outputs": [
+				{
+					"output": "w",
+					"isMulti": true,
+					"exitCond": "u"
+				},
+				{
+					"output": "u",
+					"duration": 0.01
+				}
+			]
+		},
+		{
+			"input": "up",
+			"outputs": [
+				{
+					"output": "w"
+				}
+			]
+		},
+		{
+			"input": "down",
+			"outputs": [
+				{
+					"output": "s"
+				}
+			]
+		},
+		{
+			"input": "left",
+			"outputs": [
+				{
+					"output": "a"
+				}
+			]
+		},
+		{
+			"input": "right",
+			"outputs": [
+				{
+					"output": "d"
+				}
+			]
+		},
+		{
+			"input": "jump",
+			"outputs": [
+				{
+					"output": "space"
+				}
+			]
+		},
+		{
+			"input": "attack",
+			"aliases": [
+				"nail"
+			],
+			"outputs": [
+				{
+					"output": "x"
+				}
+			]
+		},
+		{
+			"input": "dash",
+			"outputs": [
+				{
+					"output": "c"
+				}
+			]
+		},
+		{
+			"input": "crystaldash",
+			"aliases": [
+				"cdash",
+				"superdash"
+			],
+			"outputs": [
+				{
+					"output": "k",
+					"duration": 1
+				}
+			]
+		},
+		{
+			"input": "dreamnail",
+			"aliases": [
+				"dnail"
+			],
+			"outputs": [
+				{
+					"output": "l",
+					"duration": 1
+				}
+			]
+		},
+		{
+			"input": "cast",
+			"aliases": [
+				"spell"
+			],
+			"outputs": [
+				{
+					"output": "u"
+				}
+			]
+		},
+		{
+			"input": "pause",
+			"outputs": [
+				{
+					"output": "esc"
+				}
+			]
+		},
+		{
+			"input": "charms",
+			"outputs": [
+				{
+					"output": "i"
+				}
+			]
+		},
+		{
+			"input": "map",
+			"outputs": [
+				{
+					"output": "tab"
+				}
+			]
+		}
+	]
+}

@@ -2,6 +2,7 @@ import _thread
 import asyncio
 import Inputs
 from ahk import AHK
+from ahk.window import Window
 from Fun import try_play_sound
 from signal import signal, SIGINT
 
@@ -63,46 +64,60 @@ async def on_message_sent(messageData):
 				data = Inputs.get_data_for_input(game, inputName)
 
 				if data is not None:
-					duration = Inputs.defaultDuration
+					requiredWindow = None
 
-					waitForWinActive = settings["waitForWinActive"]
-					playSounds = settings["playSounds"]
-					showStats = settings["showStats"]
-					hasGivenDuration = False
-					hasExitCond = False
-					outputs = data["outputs"]
+					if settings["waitForWinActive"]:
+						config = Inputs.load_input_data(game)
 
-					for output in outputs:
-						if output.get("exitCond") is not None:
-							hasExitCond = True
-
-					if not hasExitCond:
-						for word in message.split(" "):
-							try:
-								duration = float(word)
-								hasGivenDuration = True
+						for window in ahk.windows():
+							if str(window.title).startswith("b'" + config["program"]):
+								requiredWindow = window
+								requiredWindow.activate()
 								break
-							except:
-								continue
 
-					_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+					if not settings["waitForWinActive"] or requiredWindow is not None:
+						duration = Inputs.defaultDuration
 
-					# Update stats
-					global totalInputs
-					totalInputs += 1
+						waitForWinActive = settings["waitForWinActive"]
+						playSounds = settings["playSounds"]
+						showStats = settings["showStats"]
+						hasGivenDuration = False
+						hasExitCond = False
+						outputs = data["outputs"]
 
-					if inputName in inputUsage:
-						inputUsage[inputName] = inputUsage[inputName] + 1
-					else:
-						inputUsage[inputName] = 1
+						for output in outputs:
+							if output.get("exitCond") is not None:
+								hasExitCond = True
 
-					if hasGivenDuration:
-						print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
-					else:
-						print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
+						if not hasExitCond:
+							for word in message.split(" "):
+								try:
+									duration = float(word)
+									hasGivenDuration = True
+									break
+								except:
+									continue
 
-					if playSounds:
-						_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+						_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+
+						inputName = data["input"]
+
+						# Update stats
+						global totalInputs
+						totalInputs += 1
+
+						if inputName in inputUsage:
+							inputUsage[inputName] = inputUsage[inputName] + 1
+						else:
+							inputUsage[inputName] = 1
+
+						if hasGivenDuration:
+							print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
+						else:
+							print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
+
+						if playSounds:
+							_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
 
 def get_input_list():
 	allInputs = ""

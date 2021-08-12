@@ -26,7 +26,7 @@ async def event_join(channel, user):
 
 	if hasJoined == False:
 		print("AweBot:TwitchPlays has joined " + "ChrisIsAwesome" + "'s channel!\n\n--------------------------------------------------\n")
-		await channel.send("Baaaa! Twitch Plays is active! Type inputs in chat to see them play out in game! Type !inputs to get list of inputs for " + settings["game"] + " or type !help to get more info.")
+		await channel.send("Baaaa! Twitch Plays is active! Type inputs in chat to see them play out in game! Type !inputs to get list of inputs for " + settings["game"] + " or type !help to get more info and type !fornerds if you want to see the nerd info :)")
 		hasJoined = True
 
 @bot.event()

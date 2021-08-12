@@ -33,6 +33,9 @@ async def on_message_sent(messageData):
 		elif message == "!help":
 			await channel.send("@" + user.name + ": Welcome to Twitch Plays! Twitch Plays is an interactive stream where you type inputs in chat and it sends those inputs to the game you're watching! You can optionally give a duration in seconds for the input (whole number or decimal)! Here's an example: {up 10} will move the player up for 10 seconds. Type !inputs to get the list of inputs or {!aliases <input name>} to get list of aliases")
 			print("[COMMAND] Sent help to {" + user.name + "}")
+		elif message == "!fornerds":
+			await channel.send("@" + user.name + ": I am fueled by JS and Python as I was made in 2 parts. Part 1 is for everything that is not Twitch Plays related, such as fun commands like !whoop and !bff. Part 1 was written in JS using tmi-js and is  hosted on Heroku. Source: https://github.com/Chris-Is-Awesome/AweBot-Twitch")
+			await channel.send("@" + user.name + ": Part 2 is the Twitch Plays part, which was written in Python using twitchio. Twitch Plays was coded separately as it needs to run locally, while part 1 of bot runs on a server. Source: https://github.com/Chris-Is-Awesome/AweBot-TwitchPlays")
 		else:
 			# Aliases command
 			if message.startswith("!aliases"):

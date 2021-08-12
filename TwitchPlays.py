@@ -1,13 +1,13 @@
-import asyncio
 import _thread
+import asyncio
+import Inputs
 from ahk import AHK
-from Fun import *
-from Inputs import *
+from ahk.window import Window
+from Fun import try_play_sound
 from signal import signal, SIGINT
 
 # Set variables
 ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
-heldInputs = {}
 channel = None
 isActive = True;
 
@@ -27,73 +27,101 @@ async def on_message_sent(messageData):
 		timestamp = messageData.timestamp
 		message = messageData.content
 
+		# Inputs command
 		if message == "!inputs":
 			await channel.send("@" + user.name + ": Here are the inputs for " + game + ": " + str(get_input_list()))
-			print("[COMMAND] Sent list of inputs to '" + user.name + "'")
+			print("[COMMAND] Sent list of inputs to {" + user.name + "}")
+		elif message == "!help":
+			await channel.send("@" + user.name + ": Welcome to Twitch Plays! Twitch Plays is an interactive stream where you type inputs in chat and it sends those inputs to the game you're watching! You can optionally give a duration in seconds for the input (whole number or decimal)! Here's an example: {up 10} will move the player up for 10 seconds. Type !inputs to get the list of inputs or {!aliases <input name>} to get list of aliases")
+			print("[COMMAND] Sent help to {" + user.name + "}")
+		elif message == "!fornerds":
+			await channel.send("@" + user.name + ": I am fueled by JS and Python as I was made in 2 parts. Part 1 is for everything that is not Twitch Plays related, such as fun commands like !whoop and !bff. Part 1 was written in JS using tmi-js and is  hosted on Heroku. Source: https://github.com/Chris-Is-Awesome/AweBot-Twitch")
+			await channel.send("@" + user.name + ": Part 2 is the Twitch Plays part, which was written in Python using twitchio. Twitch Plays was coded separately as it needs to run locally, while part 1 of bot runs on a server. Source: https://github.com/Chris-Is-Awesome/AweBot-TwitchPlays")
 		else:
-			data = getDataForInput(game, message)
-			if data is not None:
-				_thread.start_new_thread(handle_input, [data, user.name])
+			# Aliases command
+			if message.startswith("!aliases"):
+				words = message.split(" ", 2)
+				if len(words) > 1:
+					aliases = Inputs.get_all_aliases_for_input(Inputs.get_data_for_input(game, words[1].lower()))
+					
+					if aliases is not None:
+						aliasesOutput = "@" + user.name + ": Aliases for " + words[1].lower() + ": "
 
-def handle_input(data, user):
-	waitForWinActive = settings["waitForWinActive"]
-	playSounds = settings["playSounds"]
-	outputs = data["outputs"]
+						for alias in aliases:
+							aliasesOutput += alias + ", "
 
-	print("[INPUT] Input '" + data["input"] + "' triggered by '" + user + "'!")
+						size = len(aliasesOutput)
+						aliasesOutput = aliasesOutput[:size - 2]
 
-	if playSounds:
-		_thread.start_new_thread(tryPlaySound, [game])
-
-	# Run input(s)
-	for output in outputs:
-		key = output["output"]
-		duration = output["duration"]
-		isRecursive = output["isRecursive"]
-		exitCond = output["exitCondition"]
-
-		# Press/hold input
-		if duration <= 0:
-			ahk.key_press(key)
-		else:
-			ahk.key_down(key)
-			if isRecursive:
-				if exitCond:
-					heldInputs[key] = exitCond
+						await channel.send(aliasesOutput)
+						print("[COMMAND] Sent list of aliases to {" + user.name + "}")
+					else:
+						await channel.send("@" + user.name + ": Input {" + words[1].lower() + "} has no aliases.")
 				else:
-					heldInputs[key] = duration
+					await channel.send("@" + user.name + ": Input name must be given as argument!")
 			else:
-				time.sleep(duration)
-				ahk.key_release(key)
+				inputName = message.split(" ", 1)[0] 
+				data = Inputs.get_data_for_input(game, inputName)
 
-		# Check if any held input needs to be released based on exit condition
-		for heldInput in heldInputs:
-			keyToRelease = heldInput
-			if key == heldInputs[heldInput]:
-				ahk.key_release(keyToRelease)
-				heldInputs.pop(heldInput)
-				break
+				if data is not None:
+					requiredWindow = None
 
-	# Release held inputs after their duration
-	for heldInput in heldInputs:
-		duration = heldInputs[heldInput]
-		if type(duration) == int or type(duration) == float:
-			_thread.start_new_thread(releaseInputAfterDelay, (ahk, heldInput, duration))
+					if settings["waitForWinActive"]:
+						config = Inputs.load_input_data(game)
 
-	# Update stats
-	inputName = data["input"]
-	global totalInputs
-	totalInputs += 1
-	if inputName in inputUsage:
-		inputUsage[inputName] = inputUsage[inputName] + 1
-	else:
-		inputUsage[inputName] = 1
+						for window in ahk.windows():
+							if str(window.title).startswith("b'" + config["program"]):
+								requiredWindow = window
+								requiredWindow.activate()
+								break
 
-	return None
+					if not settings["waitForWinActive"] or requiredWindow is not None:
+						duration = Inputs.defaultDuration
+
+						waitForWinActive = settings["waitForWinActive"]
+						playSounds = settings["playSounds"]
+						showStats = settings["showStats"]
+						hasGivenDuration = False
+						hasExitCond = False
+						outputs = data["outputs"]
+
+						for output in outputs:
+							if output.get("exitCond") is not None:
+								hasExitCond = True
+
+						if not hasExitCond:
+							for word in message.split(" "):
+								try:
+									duration = float(word)
+									hasGivenDuration = True
+									break
+								except:
+									continue
+
+						_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+
+						inputName = data["input"]
+
+						# Update stats
+						global totalInputs
+						totalInputs += 1
+
+						if inputName in inputUsage:
+							inputUsage[inputName] = inputUsage[inputName] + 1
+						else:
+							inputUsage[inputName] = 1
+
+						if hasGivenDuration:
+							print("[INPUT] Input {" + inputName + "} triggered with duration of {" + str(duration) + "} by {" + user.name + "}")
+						else:
+							print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
+
+						if playSounds:
+							_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
 
 def get_input_list():
 	allInputs = ""
-	for input in getAllInputsForGame(game):
+	for input in Inputs.get_all_inputs_for_game(game):
 		allInputs += input["input"] + ", "
 
 	size = len(allInputs)
@@ -105,6 +133,9 @@ def on_quit(signal, frame):
 	if isActive == True:
 		print("\n--------------------------------------------------\n")
 		print("Terminating from input...")
+
+		if totalInputs > 0:
+			Inputs.release_all_keys()
 	
 		isActive = False
 		if channel is not None:

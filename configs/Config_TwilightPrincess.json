@@ -5,7 +5,10 @@
 		{
 			"input": "spin",
 			"aliases": [
-				"spinattack"
+				"spinattack",
+				"quickspin",
+				"sa",
+				"qs"
 			],
 			"outputs": [
 				{
@@ -45,10 +48,202 @@
 			]
 		},
 		{
+			"input": "jumpattack",
+			"aliases": [
+				"ja"
+			],
+			"outputs": [
+				{
+					"output": "l",
+					"isMulti": true,
+					"exitCond": "space"
+				},
+				{
+					"output": "space",
+					"duration": 0.1
+				}
+			]
+		},
+		{
+			"input": "jumpstrike",
+			"aliases": [
+				"js"
+			],
+			"outputs": [
+				{
+					"output": "l",
+					"isMulti": true,
+					"exitCond": "space"
+				},
+				{
+					"output": "space",
+					"duration": 1.25
+				}
+			]
+		},
+		{
 			"input": "up",
 			"outputs": [
 				{
 					"output": "w"
+				}
+			]
+		},
+		{
+			"input": "down",
+			"outputs": [
+				{
+					"output": "s"
+				}
+			]
+		},
+		{
+			"input": "left",
+			"outputs": [
+				{
+					"output": "a"
+				}
+			]
+		},
+		{
+			"input": "right",
+			"outputs": [
+				{
+					"output": "d"
+				}
+			]
+		},
+		{
+			"input": "cup",
+			"outputs": [
+				{
+					"output": "up"
+				}
+			]
+		},
+		{
+			"input": "cdown",
+			"outputs": [
+				{
+					"output": "down"
+				}
+			]
+		},
+		{
+			"input": "cleft",
+			"outputs": [
+				{
+					"output": "left"
+				}
+			]
+		},
+		{
+			"input": "cright",
+			"outputs": [
+				{
+					"output": "right"
+				}
+			]
+		},
+		{
+			"input": "dup",
+			"outputs": [
+				{
+					"output": "numpad8"
+				}
+			]
+		},
+		{
+			"input": "ddown",
+			"outputs": [
+				{
+					"output": "numpad2"
+				}
+			]
+		},
+		{
+			"input": "dleft",
+			"outputs": [
+				{
+					"output": "numpad4"
+				}
+			]
+		},
+		{
+			"input": "dright",
+			"outputs": [
+				{
+					"output": "numpad6"
+				}
+			]
+		},
+		{
+			"input": "a",
+			"outputs": [
+				{
+					"output": "space"
+				}
+			]
+		},
+		{
+			"input": "b",
+			"outputs": [
+				{
+					"output": "b"
+				}
+			]
+		},
+		{
+			"input": "x",
+			"outputs": [
+				{
+					"output": "x"
+				}
+			]
+		},
+		{
+			"input": "y",
+			"outputs": [
+				{
+					"output": "y"
+				}
+			]
+		},
+		{
+			"input": "z",
+			"outputs": [
+				{
+					"output": "z"
+				}
+			]
+		},
+		{
+			"input": "start",
+			"outputs": [
+				{
+					"output": "lctrl"
+				}
+			]
+		},
+		{
+			"input": "ltrigger",
+			"aliases": [
+				"l"
+			],
+			"outputs": [
+				{
+					"output": "l"
+				}
+			]
+		},
+		{
+			"input": "rtrigger",
+			"aliases": [
+				"r"
+			],
+			"outputs": [
+				{
+					"output": "r"
 				}
 			]
 		}

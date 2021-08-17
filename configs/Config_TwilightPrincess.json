@@ -13,37 +13,37 @@
 			"outputs": [
 				{
 					"output": "w",
-					"isMulti": true,
-					"exitCond": "a"
+					"exitCond": "a",
+					"duration": 0.1
 				},
 				{
 					"output": "a",
-					"isMulti": true,
-					"exitCond": "s"
+					"exitCond": "s",
+					"duration": 0.1
 				},
 				{
 					"output": "s",
-					"isMulti": true,
-					"exitCond": "d"
+					"exitCond": "d",
+					"duration": 0.1
 				},
 				{
 					"output": "d",
-					"isMulti": true,
-					"exitCond": "w"
+					"exitCond": "w",
+					"duration": 0.1
 				},
 				{
 					"output": "w",
-					"isMulti": true,
-					"exitCond": "a"
+					"exitCond": "a",
+					"duration": 0.1
 				},
 				{
 					"output": "a",
-					"isMulti": true,
-					"exitCond": "b"
+					"exitCond": "b",
+					"duration": 0.1
 				},
 				{
 					"output": "b",
-					"duration": 0.1
+					"duration": 0
 				}
 			]
 		},
@@ -55,8 +55,8 @@
 			"outputs": [
 				{
 					"output": "l",
-					"isMulti": true,
-					"exitCond": "space"
+					"exitCond": "space",
+					"releaseDelay": 0.25
 				},
 				{
 					"output": "space",
@@ -72,7 +72,6 @@
 			"outputs": [
 				{
 					"output": "l",
-					"isMulti": true,
 					"exitCond": "space"
 				},
 				{

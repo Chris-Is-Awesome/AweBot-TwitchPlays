@@ -1,9 +1,10 @@
-import _thread
 import asyncio
 import Inputs
+import multiprocessing
 from ahk import AHK
 from ahk.window import Window
 from Fun import try_play_sound
+#from multiprocessing.pool import ThreadPool as Pool
 from signal import signal, SIGINT
 
 # Set variables
@@ -11,9 +12,17 @@ ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
 channel = None
 isActive = True;
 
+heldKeys = []
+
 # Stats
 totalInputs = 0
 inputUsage = {}
+
+#poolSize = 5 # Max # of processes (lower = better CPU usage)
+#pool = Pool(poolSize)
+#pool = multiprocessing.Pool()
+
+processes = []
 
 async def on_message_sent(messageData):
 	if isActive == True:
@@ -60,47 +69,78 @@ async def on_message_sent(messageData):
 				else:
 					await channel.send("@" + user.name + ": Input name must be given as argument!")
 			else:
-				inputName = message.split(" ", 1)[0] 
+				# Handle input
+				inputName = message.split(" ", 1)[0].lower()
 				data = Inputs.get_data_for_input(game, inputName)
 
 				if data is not None:
 					requiredWindow = None
+					waitForWinActive = settings["waitForWinActive"]
 
-					if settings["waitForWinActive"]:
+					if waitForWinActive:
 						config = Inputs.load_input_data(game)
 
 						for window in ahk.windows():
-							if str(window.title).startswith("b'" + config["program"]):
+							if str(window.title).startswith("b'" + config["program"]) and not str(window.title).endswith("MusicBee'"):
 								requiredWindow = window
 								requiredWindow.activate()
 								break
 
-					if not settings["waitForWinActive"] or requiredWindow is not None:
+					if not waitForWinActive or requiredWindow is not None:
 						duration = Inputs.defaultDuration
 
 						waitForWinActive = settings["waitForWinActive"]
 						playSounds = settings["playSounds"]
 						showStats = settings["showStats"]
 						hasGivenDuration = False
-						hasExitCond = False
 						outputs = data["outputs"]
 
 						for output in outputs:
-							if output.get("exitCond") is not None:
-								hasExitCond = True
+							key = output["output"]
+							forcedDuration = output.get("duration")
 
-						if not hasExitCond:
-							for word in message.split(" "):
-								try:
-									duration = float(word)
-									hasGivenDuration = True
+							if forcedDuration is not None:
+								duration = forcedDuration
+							else:
+								for word in message.split(" "):
+									try:
+										duration = float(word)
+										hasGivenDuration = True
+										break
+									except:
+										continue
+
+							#_thread.start_new_thread(Inputs.handle_key_event, [key, duration])
+							#pool.apply_async(Inputs.handle_key_event, [key, duration])
+							#pool = Process(target=Inputs.handle_key_event, [key, duration])
+							#pool.start()
+							#func = Inputs.handle_key_event, [key, duration]
+							#test.append(func)
+							#runFuncsInParallel(Inputs.handle_key_event, [key, duration])
+							#pool.map(Inputs.handle_key_event, [key, duration])
+							asyncio.get_event_loop().run_in_executor(None, Inputs.handle_key_event(key, duration))
+							#print("Triggered key event for " + key + " with duration of " + str(duration))
+
+							if duration > 0:
+								if key not in heldKeys:
+									heldKeys.append(key)
+
+							"""
+							for heldKey in heldKeys:
+								exitCond = heldKeys[heldKey].get("exitCond")
+								if exitCond is None:
+									Inputs.release_key(heldKey, defaultDuration)
+								else:
+									releaseDelay = heldKeys[heldKey].get("releaseDelay")
+									print("Releasing key " + heldKey + " after " + str(releaseDelay))
+									Inputs.release_key(heldKey, releaseDelay)
+									heldKeys.pop(heldKey)
 									break
-								except:
-									continue
-
-						_thread.start_new_thread(Inputs.handle_key_event, [data, duration])
+						"""
 
 						inputName = data["input"]
+
+						#runFuncsInParallel(test)
 
 						# Update stats
 						global totalInputs
@@ -116,8 +156,16 @@ async def on_message_sent(messageData):
 						else:
 							print("[INPUT] Input {" + inputName + "} triggered by {" + user.name + "}")
 
-						if playSounds:
-							_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+						#if playSounds:
+							#_thread.start_new_thread(try_play_sound, [game, settings["playSoundsChanceOverride"]])
+
+def runFuncsInParallel(*funcs):
+	for func in funcs:
+		process = Process(target=func)
+		process.start()
+		processes.append(process)
+	for process in processes:
+		process.join()
 
 def get_input_list():
 	allInputs = ""
@@ -134,8 +182,9 @@ def on_quit(signal, frame):
 		print("\n--------------------------------------------------\n")
 		print("Terminating from input...")
 
-		if totalInputs > 0:
-			Inputs.release_all_keys()
+		for key in heldKeys:
+			Inputs.release_key(key)
+			heldKeys.remove(key)
 	
 		isActive = False
 		if channel is not None:

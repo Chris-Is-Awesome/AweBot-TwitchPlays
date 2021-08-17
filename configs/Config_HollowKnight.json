@@ -43,8 +43,7 @@
 					"exitCond": "u"
 				},
 				{
-					"output": "u",
-					"duration": 0.01
+					"output": "u"
 				}
 			]
 		},
@@ -63,8 +62,37 @@
 					"exitCond": "u"
 				},
 				{
-					"output": "u",
-					"duration": 0.01
+					"output": "u"
+				}
+			]
+		},
+		{
+			"input": "jumpleft",
+			"aliases": [
+				"jl"
+			],
+			"outputs": [
+				{
+					"output": "space",
+					"isMulti": true
+				},
+				{
+					"output": "a"
+				}
+			]
+		},
+		{
+			"input": "jumpright",
+			"aliases": [
+				"jr"
+			],
+			"outputs": [
+				{
+					"output": "space",
+					"isMulti": true
+				},
+				{
+					"output": "d"
 				}
 			]
 		},
@@ -111,7 +139,8 @@
 		{
 			"input": "attack",
 			"aliases": [
-				"nail"
+				"nail",
+				"x"
 			],
 			"outputs": [
 				{

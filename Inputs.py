@@ -1,4 +1,3 @@
-import _thread
 import json
 import os
 import time
@@ -7,63 +6,34 @@ from ahk import AHK
 ahk = AHK(executable_path='C:\Program Files\AutoHotkey\AutoHotkey.exe')
 inputData = None
 defaultDuration = 1
-heldKeys = {}
 
 # Key: Platform
 # Value: Input
 tempDisabledInputs = {}
 
-def handle_key_event(data, duration = 0):
-	outputs = data["outputs"]
-	
-	for output in outputs:
-		key = output["output"]
-		forcedDuration = output.get("duration")
-		isMulti = output.get("isMulti")
-		exitCond = output.get("exitCond")
-
-		if forcedDuration is None:
-			forcedDuration = duration
-		else:
-			duration = forcedDuration
-
-		if duration > 0:
-			hold_key(key, duration, isMulti, exitCond)
-		else:
-			press_key(key)
-
-		for heldKey in heldKeys:
-			if key == heldKeys[heldKey]:
-				release_key(heldKey)
-				heldKeys.pop(heldKey)
-				break
+def handle_key_event(key, duration):
+	if duration > 0:
+		hold_key(key, duration)
+	else:
+		press_key(key)
 
 # Presses the given key
 def press_key(key):
 	ahk.key_press(key)
+	print("Pressed key " + key)
 
 # Holds the given key for the given duration
-def hold_key(key, duration, isMulti, exitCond):
+def hold_key(key, duration):
 	ahk.key_down(key)
+	print("Holding key " + key + " for duration " + str(duration))
 
-	if isMulti is not None and exitCond is not None:
-		if key not in heldKeys:
-			heldKeys[key] = exitCond
-
-	if not isMulti:
-		time.sleep(duration)
-		release_key(key)
+	time.sleep(duration)
+	release_key(key)
 
 # Releases the given key
 def release_key(key):
 	ahk.key_release(key)
-
-# Releases all currently held keys
-def release_all_keys():
-	# Release every key & remove them from list of held keys
-	for key in heldKeys:
-		ahk.key_release(key)
-		heldKeys.pop(key)
+	print("Released key " + key)
 
 # Returns json data for the given input or None if it data not found
 def get_data_for_input(wantedGame, wantedInput):
